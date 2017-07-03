@@ -1,7 +1,7 @@
 Laravel Rollbar
 ===============
 
-[![Build Status](http://img.shields.io/travis/jenssegers/laravel-rollbar.svg)](https://travis-ci.org/jenssegers/laravel-rollbar) [![Coverage Status](http://img.shields.io/coveralls/jenssegers/laravel-rollbar.svg)](https://coveralls.io/r/jenssegers/laravel-rollbar)
+[![Build Status](http://img.shields.io/travis/captbrogers/laravel-rollbar.svg)](https://travis-ci.org/captbrogers/laravel-rollbar) [![Coverage Status](https://coveralls.io/repos/github/captbrogers/laravel-rollbar/badge.svg?branch=develop)](https://coveralls.io/github/captbrogers/laravel-rollbar?branch=develop)
 
 Rollbar error monitoring integration for Laravel projects. This library adds a listener to Laravel's logging component. Laravel's session information will be sent in to Rollbar, as well as some other helpful information such as 'environment', 'server', and 'session'.
 
@@ -12,14 +12,14 @@ Installation
 
 Install using composer:
 
-```
-composer require jenssegers/rollbar
+```bash
+composer require captbrogers/rollbar
 ```
 
 Add the service provider to the `'providers'` array in `config/app.php`:
 
 ```php
-Jenssegers\Rollbar\RollbarServiceProvider::class,
+Captbrogers\Rollbar\RollbarServiceProvider::class,
 ```
     
 If you only want to enable Rollbar reporting for certain environments you can conditionally load the service provider in your `AppServiceProvider`:
@@ -28,7 +28,7 @@ If you only want to enable Rollbar reporting for certain environments you can co
     public function register()
     {
         if ($this->app->environment('production')) {
-            $this->app->register(\Jenssegers\Rollbar\RollbarServiceProvider::class);
+            $this->app->register(\Captbrogers\Rollbar\RollbarServiceProvider::class);
         }
     }
 ```
