@@ -1,7 +1,7 @@
 Laravel Rollbar
 ===============
 
-[![Build Status](http://img.shields.io/travis/captbrogers/laravel-rollbar.svg)](https://travis-ci.org/captbrogers/laravel-rollbar) [![Coverage Status](https://coveralls.io/repos/github/captbrogers/laravel-rollbar/badge.svg?branch=develop)](https://coveralls.io/github/captbrogers/laravel-rollbar?branch=develop)
+[![Build Status](https://secure.travis-ci.org/captbrogers/laravel-rollbar.png?branch=master)](https://travis-ci.org/captbrogers/laravel-rollbar) [![Coverage Status](https://coveralls.io/repos/github/captbrogers/laravel-rollbar/badge.svg?branch=master)](https://coveralls.io/github/captbrogers/laravel-rollbar?branch=master)
 
 Rollbar error monitoring integration for Laravel projects. This library adds a listener to Laravel's logging component. Laravel's session information will be sent in to Rollbar, as well as some other helpful information such as 'environment', 'server', and 'session'.
 
