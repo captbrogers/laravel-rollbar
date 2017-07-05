@@ -1,5 +1,5 @@
 {
-    "name": "captbrogers/rollbar",
+    "name": "captbrogers/laravel-rollbar",
     "description": "Rollbar error monitoring integration for Laravel 5.4 projects",
     "keywords": ["laravel", "rollbar", "monitoring", "error", "logging"],
     "homepage": "https://github.com/captbrogers/laravel-rollbar",
@@ -16,13 +16,13 @@
     ],
     "require": {
         "php": ">=7.0",
-        "illuminate/support": "^5.4",
+        "illuminate/support": "^5.3",
         "rollbar/rollbar": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.2",
         "mockery/mockery": "dev-master",
-        "orchestra/testbench": "^3.4",
+        "orchestra/testbench": "^3.3",
         "satooshi/php-coveralls": "dev-master"
     },
     "autoload": {
@@ -36,7 +36,7 @@
                 "Captbrogers\\Rollbar\\RollbarServiceProvider"
             ],
             "aliases": {
-                "Rollbar": "Captbrogers\\Rollbar\\Facades\\Rollbar"
+                "Captbrogers\\Rollbar": "Captbrogers\\Rollbar\\Facades\\Rollbar"
             }
         }
     }
