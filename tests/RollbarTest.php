@@ -12,7 +12,7 @@ class RollbarTest extends Orchestra\Testbench\TestCase
 
     protected function getPackageProviders($app)
     {
-        return ['Jenssegers\Rollbar\RollbarServiceProvider'];
+        return ['Captbrogers\Rollbar\RollbarServiceProvider'];
     }
 
     public function testBinding()
@@ -20,14 +20,14 @@ class RollbarTest extends Orchestra\Testbench\TestCase
         $client = $this->app->make('RollbarNotifier');
         $this->assertInstanceOf('RollbarNotifier', $client);
 
-        $handler = $this->app->make('Jenssegers\Rollbar\RollbarLogHandler');
-        $this->assertInstanceOf('Jenssegers\Rollbar\RollbarLogHandler', $handler);
+        $handler = $this->app->make('Captbrogers\Rollbar\RollbarLogHandler');
+        $this->assertInstanceOf('Captbrogers\Rollbar\RollbarLogHandler', $handler);
     }
 
     public function testIsSingleton()
     {
-        $handler1 = $this->app->make('Jenssegers\Rollbar\RollbarLogHandler');
-        $handler2 = $this->app->make('Jenssegers\Rollbar\RollbarLogHandler');
+        $handler1 = $this->app->make('Captbrogers\Rollbar\RollbarLogHandler');
+        $handler2 = $this->app->make('Captbrogers\Rollbar\RollbarLogHandler');
         $this->assertEquals(spl_object_hash($handler1), spl_object_hash($handler2));
     }
 
@@ -62,11 +62,11 @@ class RollbarTest extends Orchestra\Testbench\TestCase
         $clientMock = Mockery::mock('RollbarNotifier');
         $clientMock->shouldReceive('report_message')->once()->with('Test log message', 'info', []);
 
-        $handlerMock = Mockery::mock('Jenssegers\Rollbar\RollbarLogHandler', [$clientMock, $this->app]);
+        $handlerMock = Mockery::mock('Captbrogers\Rollbar\RollbarLogHandler', [$clientMock, $this->app]);
         $handlerMock->shouldReceive('log')->passthru();
-        $this->app['Jenssegers\Rollbar\RollbarLogHandler'] = $handlerMock;
+        $this->app['Captbrogers\Rollbar\RollbarLogHandler'] = $handlerMock;
 
-        $handler = $this->app->make('Jenssegers\Rollbar\RollbarLogHandler');
+        $handler = $this->app->make('Captbrogers\Rollbar\RollbarLogHandler');
         $handler->log('info', 'Test log message');
 
         $this->assertEquals([
@@ -84,11 +84,11 @@ class RollbarTest extends Orchestra\Testbench\TestCase
             'tags' => ['one' => 'two'],
         ]);
 
-        $handlerMock = Mockery::mock('Jenssegers\Rollbar\RollbarLogHandler', [$clientMock, $this->app]);
+        $handlerMock = Mockery::mock('Captbrogers\Rollbar\RollbarLogHandler', [$clientMock, $this->app]);
         $handlerMock->shouldReceive('log')->passthru();
-        $this->app['Jenssegers\Rollbar\RollbarLogHandler'] = $handlerMock;
+        $this->app['Captbrogers\Rollbar\RollbarLogHandler'] = $handlerMock;
 
-        $handler = $this->app->make('Jenssegers\Rollbar\RollbarLogHandler');
+        $handler = $this->app->make('Captbrogers\Rollbar\RollbarLogHandler');
         $handler->log('info', 'Test log message', [
             'tags'   => ['one' => 'two'],
             'person' => ['id'  => 1337, 'email' => 'john@doe.com'],
@@ -109,9 +109,9 @@ class RollbarTest extends Orchestra\Testbench\TestCase
         $clientMock->shouldReceive('report_message')->times(2);
         $clientMock->shouldReceive('report_exception')->times(1)->with($exception, null, ['foo' => 'bar']);
 
-        $handlerMock = Mockery::mock('Jenssegers\Rollbar\RollbarLogHandler', [$clientMock, $this->app]);
+        $handlerMock = Mockery::mock('Captbrogers\Rollbar\RollbarLogHandler', [$clientMock, $this->app]);
         $handlerMock->shouldReceive('log')->passthru();
-        $this->app['Jenssegers\Rollbar\RollbarLogHandler'] = $handlerMock;
+        $this->app['Captbrogers\Rollbar\RollbarLogHandler'] = $handlerMock;
 
         $this->app->log->info('hello');
         $this->app->log->error('oops');
