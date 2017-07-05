@@ -1,38 +1,42 @@
 {
-    "name": "jenssegers/rollbar",
+    "name": "captbrogers/rollbar",
     "description": "Rollbar error monitoring integration for Laravel projects",
     "keywords": ["laravel", "rollbar", "monitoring", "error", "logging"],
-    "homepage": "https://github.com/jenssegers/laravel-rollbar",
+    "homepage": "https://github.com/captbrogers/laravel-rollbar",
     "license": "MIT",
     "authors": [
         {
             "name": "Jens Segers",
             "homepage": "https://jenssegers.com"
+        },
+        {
+            "name": "Brian Rogers",
+            "email": "captbrogers@gmail.com"
         }
     ],
     "require": {
-        "php": ">=5.4",
-        "illuminate/support": "^4.0|^5.0",
-        "rollbar/rollbar": "~0.15"
+        "php": ">=7.0",
+        "illuminate/support": "^5.3",
+        "rollbar/rollbar": "^1.1"
     },
     "require-dev": {
         "orchestra/testbench": "^3.0",
         "mockery/mockery": "^0.9",
         "satooshi/php-coveralls": "^1.0",
-        "phpunit/phpunit": "~4.0|~5.0"
+        "phpunit/phpunit": "^5.0"
     },
     "autoload": {
         "psr-4": {
-            "Jenssegers\\Rollbar\\": "src/"
+            "Captbrogers\\Rollbar\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Jenssegers\\Rollbar\\RollbarServiceProvider"
+                "Captbrogers\\Rollbar\\RollbarServiceProvider"
             ],
             "aliases": {
-                "Rollbar": "Jenssegers\\Rollbar\\Facades\\Rollbar"
+                "Rollbar": "Captbrogers\\Rollbar\\Facades\\Rollbar"
             }
         }
     }

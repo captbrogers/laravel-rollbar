@@ -1,6 +1,9 @@
-<?php namespace Jenssegers\Rollbar;
+<?php
+
+namespace Captbrogers\Rollbar;
 
 use Illuminate\Support\ServiceProvider;
+
 use InvalidArgumentException;
 use Rollbar;
 use RollbarNotifier;
@@ -26,7 +29,7 @@ class RollbarServiceProvider extends ServiceProvider
             $args = func_get_args();
 
             // Laravel 5.4 returns a MessageLogged instance only
-            if (count($args) == 1) {
+            if (count($args) === 1) {
                 $level = $args[0]->level;
                 $message = $args[0]->message;
                 $context = $args[0]->context;
@@ -36,7 +39,7 @@ class RollbarServiceProvider extends ServiceProvider
                 $context = $args[2];
             }
 
-            $app['Jenssegers\Rollbar\RollbarLogHandler']->log($level, $message, $context);
+            $app['Captbrogers\Rollbar\RollbarLogHandler']->log($level, $message, $context);
         });
     }
 
@@ -72,7 +75,7 @@ class RollbarServiceProvider extends ServiceProvider
             return $rollbar;
         });
 
-        $this->app->singleton('Jenssegers\Rollbar\RollbarLogHandler', function ($app) {
+        $this->app->singleton('Captbrogers\Rollbar\RollbarLogHandler', function ($app) {
             $level = getenv('ROLLBAR_LEVEL') ?: $app['config']->get('services.rollbar.level', 'debug');
 
             return new RollbarLogHandler($app['RollbarNotifier'], $app, $level);
