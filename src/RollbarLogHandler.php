@@ -8,14 +8,15 @@ use Psr\Log\AbstractLogger;
 
 use Exception;
 use InvalidArgumentException;
-use RollbarNotifier;
+use Rollbar\RollbarLogger;
+use Rollbar\Payload\Level;
 
 class RollbarLogHandler extends AbstractLogger
 {
     /**
      * The rollbar client instance.
      *
-     * @var RollbarNotifier
+     * @var \Rollbar\RollbarLogger
      */
     protected $rollbar;
 
@@ -53,7 +54,7 @@ class RollbarLogHandler extends AbstractLogger
     /**
      * Constructor.
      */
-    public function __construct(RollbarNotifier $rollbar, Application $app, $level = 'debug')
+    public function __construct(RollbarLogger $rollbar, Application $app, $level = 'debug')
     {
         $this->rollbar = $rollbar;
 
@@ -102,13 +103,6 @@ class RollbarLogHandler extends AbstractLogger
             if (isset($context['person']) and is_array($context['person'])) {
                 $this->rollbar->person = $context['person'];
                 unset($context['person']);
-            } else {
-                if ($this->rollbar->person_fn && is_callable($this->rollbar->person_fn)) {
-                    $data = @call_user_func($this->rollbar->person_fn);
-                    if (isset($data['id'])) {
-                        $this->rollbar->person = call_user_func($this->rollbar->person_fn);
-                    }
-                }
             }
 
             // Add user session information.

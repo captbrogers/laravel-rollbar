@@ -5,8 +5,8 @@ namespace Captbrogers\Rollbar;
 use Illuminate\Support\ServiceProvider;
 
 use InvalidArgumentException;
-use Rollbar;
-use RollbarNotifier;
+use Rollbar\Rollbar;
+use Rollbar\RollbarLogger;
 
 class RollbarServiceProvider extends ServiceProvider
 {
@@ -49,13 +49,13 @@ class RollbarServiceProvider extends ServiceProvider
     public function register()
     {
         // Don't register rollbar if it is not configured.
-        if (! getenv('ROLLBAR_TOKEN') and ! $this->app['config']->get('services.rollbar')) {
+        if ((! getenv('ROLLBAR_TOKEN') or is_null(getenv('ROLLBAR_TOKEN'))) and ! $this->app['config']->get('services.rollbar')) {
             return;
         }
 
         $app = $this->app;
 
-        $this->app->singleton('RollbarNotifier', function ($app) {
+        $this->app->singleton('RollbarLogger', function ($app) {
             // Default configuration.
             $defaults = [
                 'environment'  => $app->environment(),
@@ -66,25 +66,25 @@ class RollbarServiceProvider extends ServiceProvider
 
             $config['access_token'] = getenv('ROLLBAR_TOKEN') ?: $app['config']->get('services.rollbar.access_token');
 
-            if (empty($config['access_token'])) {
+            if (is_null($config['access_token'])) {
                 throw new InvalidArgumentException('Rollbar access token not configured');
             }
 
-            Rollbar::$instance = $rollbar = new RollbarNotifier($config);
+            $rollbar = new RollbarLogger($config);
 
             return $rollbar;
         });
 
         $this->app->singleton('Captbrogers\Rollbar\RollbarLogHandler', function ($app) {
-            $level = getenv('ROLLBAR_LEVEL') ?: $app['config']->get('services.rollbar.level', 'debug');
+            $level = getenv('ROLLBAR_LEVEL') ?: $app['config']->get('services.rollbar.level', 'error');
 
-            return new RollbarLogHandler($app['RollbarNotifier'], $app, $level);
+            return new RollbarLogHandler($app['RollbarLogger'], $app, $level);
         });
 
         // Register the fatal error handler.
         register_shutdown_function(function () use ($app) {
-            if (isset($app['RollbarNotifier'])) {
-                $app->make('RollbarNotifier');
+            if (isset($app['RollbarLogger'])) {
+                $app->make('RollbarLogger');
                 Rollbar::report_fatal_error();
             }
         });

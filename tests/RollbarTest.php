@@ -1,5 +1,7 @@
 <?php
 
+use Rollbar\RollbarLogger;
+
 class RollbarTest extends Orchestra\Testbench\TestCase
 {
     public function setUp()
@@ -17,9 +19,6 @@ class RollbarTest extends Orchestra\Testbench\TestCase
 
     public function testBinding()
     {
-        $client = $this->app->make('RollbarNotifier');
-        $this->assertInstanceOf('RollbarNotifier', $client);
-
         $handler = $this->app->make('Captbrogers\Rollbar\RollbarLogHandler');
         $this->assertInstanceOf('Captbrogers\Rollbar\RollbarLogHandler', $handler);
     }
@@ -33,13 +32,13 @@ class RollbarTest extends Orchestra\Testbench\TestCase
 
     public function testFacade()
     {
-        $client = Rollbar::$instance;
-        $this->assertInstanceOf('RollbarNotifier', $client);
+        $client = Rollbar::logger();
+        $this->assertInstanceOf('Rollbar\Rollbar', $client);
     }
 
     public function testPassConfiguration()
     {
-        $client = $this->app->make('RollbarNotifier');
+        $client = $this->app->make('Rollbar');
         $this->assertEquals($this->access_token, $client->access_token);
     }
 
@@ -49,7 +48,7 @@ class RollbarTest extends Orchestra\Testbench\TestCase
         $this->app->config->set('services.rollbar.included_errno', E_ERROR);
         $this->app->config->set('services.rollbar.environment', 'staging');
 
-        $client = $this->app->make('RollbarNotifier');
+        $client = $this->app->make('Captbrogers\Rollbar\RollbarLogHandler');
         $this->assertEquals('staging', $client->environment);
         $this->assertEquals('/tmp', $client->root);
         $this->assertEquals(E_ERROR, $client->included_errno);
@@ -59,7 +58,7 @@ class RollbarTest extends Orchestra\Testbench\TestCase
     {
         $this->app->session->put('foo', 'bar');
 
-        $clientMock = Mockery::mock('RollbarNotifier');
+        $clientMock = Mockery::mock('Captbrogers\Rollbar\RollbarLogHandler');
         $clientMock->shouldReceive('report_message')->once()->with('Test log message', 'info', []);
 
         $handlerMock = Mockery::mock('Captbrogers\Rollbar\RollbarLogHandler', [$clientMock, $this->app]);
@@ -79,7 +78,7 @@ class RollbarTest extends Orchestra\Testbench\TestCase
     {
         $this->app->session->put('foo', 'bar');
 
-        $clientMock = Mockery::mock('RollbarNotifier');
+        $clientMock = Mockery::mock('RollbarLogger');
         $clientMock->shouldReceive('report_message')->once()->with('Test log message', 'info', [
             'tags' => ['one' => 'two'],
         ]);
@@ -105,7 +104,7 @@ class RollbarTest extends Orchestra\Testbench\TestCase
     {
         $exception = new Exception('Testing error handler');
 
-        $clientMock = Mockery::mock('RollbarNotifier');
+        $clientMock = Mockery::mock('RollbarLogger');
         $clientMock->shouldReceive('report_message')->times(2);
         $clientMock->shouldReceive('report_exception')->times(1)->with($exception, null, ['foo' => 'bar']);
 
@@ -122,9 +121,9 @@ class RollbarTest extends Orchestra\Testbench\TestCase
     {
         $this->app->config->set('services.rollbar.level', 'critical');
 
-        $clientMock = Mockery::mock('RollbarNotifier');
+        $clientMock = Mockery::mock('RollbarLogger');
         $clientMock->shouldReceive('report_message')->times(3);
-        $this->app['RollbarNotifier'] = $clientMock;
+        $this->app['RollbarLogger'] = $clientMock;
 
         $this->app->log->debug('hello');
         $this->app->log->info('hello');
@@ -140,9 +139,9 @@ class RollbarTest extends Orchestra\Testbench\TestCase
     {
         $this->app->config->set('services.rollbar.level', 'debug');
 
-        $clientMock = Mockery::mock('RollbarNotifier');
+        $clientMock = Mockery::mock('RollbarLogger');
         $clientMock->shouldReceive('report_message')->times(8);
-        $this->app['RollbarNotifier'] = $clientMock;
+        $this->app['RollbarLogger'] = $clientMock;
 
         $this->app->log->debug('hello');
         $this->app->log->info('hello');
@@ -158,9 +157,9 @@ class RollbarTest extends Orchestra\Testbench\TestCase
     {
         $this->app->config->set('services.rollbar.level', 'none');
 
-        $clientMock = Mockery::mock('RollbarNotifier');
+        $clientMock = Mockery::mock('RollbarLogger');
         $clientMock->shouldReceive('report_message')->times(0);
-        $this->app['RollbarNotifier'] = $clientMock;
+        $this->app['RollbarLogger'] = $clientMock;
 
         $this->app->log->debug('hello');
         $this->app->log->info('hello');
