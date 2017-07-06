@@ -40,14 +40,14 @@ class RollbarLogHandler extends AbstractLogger
      * @var array
      */
     protected $levels = [
-        'debug'     => Monolog::DEBUG,
-        'info'      => Monolog::INFO,
-        'notice'    => Monolog::NOTICE,
-        'warning'   => Monolog::WARNING,
-        'error'     => Monolog::ERROR,
-        'critical'  => Monolog::CRITICAL,
-        'alert'     => Monolog::ALERT,
-        'emergency' => Monolog::EMERGENCY,
+        'debug'     => Level::DEBUG,
+        'info'      => Level::INFO,
+        'notice'    => Level::NOTICE,
+        'warning'   => Level::WARNING,
+        'error'     => Level::ERROR,
+        'critical'  => Level::CRITICAL,
+        'alert'     => Level::ALERT,
+        'emergency' => Level::EMERGENCY,
         'none'      => 1000,
     ];
 
@@ -79,11 +79,7 @@ class RollbarLogHandler extends AbstractLogger
 
         $context = $this->addContext($context);
 
-        if ($message instanceof Exception) {
-            $this->rollbar->report_exception($message, null, $context);
-        } else {
-            $this->rollbar->report_message($message, $level, $context);
-        }
+        $this->rollbar->log($level, $message, $context);
     }
 
     /**
