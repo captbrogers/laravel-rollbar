@@ -49,7 +49,7 @@ class RollbarServiceProvider extends ServiceProvider
     public function register()
     {
         // Don't register rollbar if it is not configured.
-        if ((! getenv('ROLLBAR_TOKEN') or is_null(getenv('ROLLBAR_TOKEN'))) and ! $this->app['config']->get('services.rollbar')) {
+        if (strlen(getenv('ROLLBAR_TOKEN')) !== 32) {
             return;
         }
 
@@ -58,7 +58,7 @@ class RollbarServiceProvider extends ServiceProvider
         $this->app->singleton('RollbarLogger', function ($app) {
             // Default configuration.
             $defaults = [
-                'environment'  => $app->environment(),
+                'environment'  => getenv('ROLLBAR_ENV'),
                 'root'         => base_path(),
             ];
 
